@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Handicraftso | Profile</title>
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
+
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+	<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCTwlg00CRN5HXahzZOXRh6fRIvAqbTsQo",
+    authDomain: "handicraftso-cda89.firebaseapp.com",
+    databaseURL: "https://handicraftso-cda89.firebaseio.com",
+    projectId: "handicraftso-cda89",
+    storageBucket: "",
+    messagingSenderId: "394708400898"
+  };
+  firebase.initializeApp(config);
+</script>
+
+
+<script>
+
+
+
+	function check()
+	{
+		console.log("clicked");
+		firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+					window.location.href = "profile.html";
+
+			}else {
+				window.location.href = "login.html";
+
+			}
+		});
+	}
+
+</script>
+
+
+	
+		 	<img class="icon last" src="brown search.png">
+		<img class="icon" src="brown use.png" onclick="check()">
+		<a href="cart.html"><img class="icon" src="brown cart.png"> </a>
+		<br>
+		<br>
+		<br>
+		<br>
+		
+		<h3 id = "welcome" style="color : #3F2823"></h3> 
+		<nav>
+		<div class = "bar">
+		<div class = "pro_bar">
+			<!-- <div>Space for logo</div> -->
+			<div class = "logo">
+			<img src = "logo.png" id="upper">
+			<img src = "underlogo.png" id="lower">
+			</div>
+			<div class = "navbar-titles">
+				
+			
+				<ul>
+				
+
+					<li class = "last"> <a href="contact.html">Contact</a></li>
+					<li><a href="profile.html" id="profile">Profile</a></li>
+					<li><a href="products.html">Store</a></li>
+					<li ><a href="index.html">Home</a></li>
+					<li class = "revealmore"> ... </li>
+					
+					
+				</ul>
+
+			</div>
+			</div>
+			</div>
+		</nav>
+		<script>
+			
+			firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+				console.log("user exist"+user.email);
+								console.log("user exist"+user.uid);
+
+
+
+				firebase.database().ref('/users/'+ user.uid).once('value').then(function(snapshot){
+						var username = snapshot.val().username;
+						if(username === "")
+						{
+							document.getElementById("welcome").innerHTML = "Welcome "+user.email;
+						}else {
+							document.getElementById("welcome").innerHTML = "Welcome "+username;
+						}
+
+
+				});
+			
+			}else {
+				console.log("user does not exist");
+				document.getElementById("welcome").innerHTML = "Not Signed in ";
+			}
+		});
+
+		</script>
+
+
+		<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& -->
+
+
+
+
+
+
+
+
+
+
+<div class="right">
+<h1>Profile </h1>
+<h3 id ="waitalert"> Updating your profile data.Please wait ..... </h3>
+	<form onsubmit="return false">
+		<input type="text" name="name" id="name" placeholder="Username" readonly="readonly">
+		<h4>Delivery Address</h4>
+		<textarea readonly="readonly" placeholder = "Delivery Address" name="deliveryaddress" id="delivery"  >  </textarea>
+		<input type="text" name="zip" id="zip" placeholder="Zipcode" readonly="readonly"> 
+		<input type="text" name="number" id="contact" placeholder="Contact" readonly="readonly">
+		<input type ="submit" id="edit" value="Edit profile" onclick="eedit()">
+		<input type ="submit" id="signout" value="Sign out" onclick="signoutuser()">
+		<h4> Your delivery address will be set as default in each order you place, although you will be able to change your delivery address from your cart before placing the order. </h4>
+
+
+
+
+
+
+	</form>
+	<script>
+
+	
+firebase.auth().onAuthStateChanged(function (user) {
+	console.log("update");
+		
+		if(user) {
+			firebase.database().ref('/users/'+ firebase.auth().currentUser.uid).once('value').then(function(snapshot){
+				console.log(snapshot.val());
+
+				document.getElementById("name").value = snapshot.val().username;
+				document.getElementById("delivery").value = snapshot.val().address;
+				document.getElementById("zip").value = snapshot.val().zip;
+				document.getElementById("contact").value = snapshot.val().contact;
+				if(snapshot.val().username === "" || snapshot.val().username === null) {
+						document.getElementById("name").value = snapshot.val().email;
+				}
+				document.getElementById("name").style.color = "#3F2823";
+				document.getElementById("delivery").style.color = "#3F2823";
+				document.getElementById("zip").style.color = "#3F2823";
+				document.getElementById("contact").style.color = "#3F2823";
+
+				document.getElementById("name").style.fontWeight = "bold";
+				document.getElementById("delivery").style.fontWeight = "bold";
+				document.getElementById("zip").style.fontWeight = "bold";
+				document.getElementById("contact").style.fontWeight = "bold";
+
+				document.getElementById("delivery").style.fontsize ="18px";
+
+
+				document.getElementById("waitalert").style.display = 'none';
+
+			});
+			firebase.auth().currentUser.displayName = username;
+		}else {
+			document.getElementById("waitalert").value = " You are not logged in .";
+		}
+	});
+		
+
+
+
+function eedit()
+	{
+		console.log(document.getElementById("edit").value);
+		var userid = firebase.auth().currentUser.uid;
+		if(document.getElementById("edit").value === "Edit profile")
+		{
+
+			document.getElementById("name").readOnly = false;
+			document.getElementById("delivery").readOnly = false;
+			document.getElementById("zip").readOnly = false;
+			document.getElementById("contact").readOnly = false;
+			document.getElementById("edit").value = "Done";
+
+
+
+
+
+		}else if(document.getElementById("edit").value === "Done"){
+
+			document.getElementById("name").readOnly = true;
+			document.getElementById("delivery").readOnly = true;
+			document.getElementById("zip").readOnly = true;
+			document.getElementById("contact").readOnly = true;
+			document.getElementById("edit").value = "Edit profile";
+			
+			firebase.database().ref('/users/'+userid).set ({
+				username : document.getElementById("name").value.toUpperCase(),
+				address : document.getElementById("delivery").value,
+				contact : document.getElementById("contact").value,
+				zip : document.getElementById("zip").value,
+				email : firebase.auth().currentUser.email
+
+
+
+
+			});
+			var username = document.getElementById("name").value;
+			var email = firebase.auth().currentUser.email;
+			if(username !== email && username!=="")
+				{
+					firebase.auth().currentUser.displayName = username;
+				}
+
+
+
+			}
+	}
+
+	function signoutuser()
+	{
+		console.log(firebase.auth().currentUser);
+		firebase.auth().signOut().then(function() {
+				console.log(firebase.auth().currentUser);
+				window.location.href="index.html";
+		}).catch(function(error) {
+
+			console.log(firebase.auth().currentUser);
+		});
+		console.log(firebase.auth().currentUser);
+
+	}
+
+
+</script>
+	
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+categories<html>
+<head> 
+	<title>Handicraftso</title>
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
+
+	<link rel="stylesheet" href="style.css">
+	 </head>
+<body>
+	
+
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+	<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCTwlg00CRN5HXahzZOXRh6fRIvAqbTsQo",
+    authDomain: "handicraftso-cda89.firebaseapp.com",
+    databaseURL: "https://handicraftso-cda89.firebaseio.com",
+    projectId: "handicraftso-cda89",
+    storageBucket: "",
+    messagingSenderId: "394708400898"
+  };
+  firebase.initializeApp(config);
+</script>
+
+
+<script>
+
+
+
+	function check()
+	{
+		console.log("clicked");
+		firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+					window.location.href = "profile.html";
+
+			}else {
+				window.location.href = "login.html";
+
+			}
+		});
+	}
+
+</script>
+
+
+	
+		 	
+
+		
+		<img class="icon last" src="brown search.png">
+		<img class="icon" src="brown use.png" onclick="check()">
+		<a href="cart.html"><img class="icon" src="brown cart.png"> </a>
+		<br>
+		<br>
+		<br>
+		<br>
+		<!-- <h3 id = "welcome" style="color : #3F2823"></h3>  -->
+		<nav>
+		<div class = "bar">
+		<div class = "pro_bar">
+			<!-- <div>Space for logo</div> -->
+			<div class = "logo">
+			<img src = "logo.png" id="upper">
+			<img src = "underlogo.png" id="lower">
+			</div>
+			<div class = "navbar-titles">
+				
+			
+				<ul>
+				
+
+					<li class = "last"> <a href="contact.html">Contact</a></li>
+					<li><a href="profile.html" id="profile">Profile</a></li>
+					<li><a href="products.html">Store</a></li>
+					<li ><a href="index.html">Home</a></li>
+					<li class = "revealmore"> ... </li>
+					
+					
+				</ul>
+
+			</div>
+			</div>
+			</div>
+		</nav>
+		<script>
+			
+			firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+				console.log("user exist"+user.email);
+								console.log("user exist"+user.uid);
+
+
+
+				firebase.database().ref('/users/'+ user.uid).once('value').then(function(snapshot){
+						var username = snapshot.val().username;
+						if(username === "")
+						{
+							document.getElementById("welcome").innerHTML = "Welcome "+user.email;
+						}else {
+							document.getElementById("welcome").innerHTML = "Welcome "+username;
+						}
+
+
+				});
+			
+			}else {
+				console.log("user does not exist");
+				document.getElementById("welcome").innerHTML = "Not Signed in ";
+			}
+		});
+
+		</script>
+
+
+		<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& -->
+
+
+
+	
+
+
+	<div class="pro_inner-rect">
+		<h2> Handicraftso creations </h2>
+		<h6>We have diverse collection of Handicrafts. No need to hunt arround, we have got all for you. </h6>
+	</div>
+
+	<div class = "cart">
+	<button id="gotocart" onclick="window.location.href='cart.html'"> Go to Cart </button>
+	</div>
+
+
+	<div aria-busy="true" aria-label="Loading" role="progressbar" class="ani-container" id="balls">
+  <div class="swing">
+    <div class="swing-l"></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div class="swing-r"></div>
+  </div>
+  <div class="shadow">
+    <div class="shadow-l"></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div class="shadow-r"></div>
+  </div>
+ </div> <br> <br>
+	<h3 id ="warning"> Please wait,while the products are loading .... </h3>
+		<script>
+		f
+		console.log("here ?");
+
+ 			function addtocart(id)
+ 			{
+ 				alert("product is added to cart of id" +id);
+ 			}
+
+ 		</script>
+
+
+
+ 		<script>
+ 		firebase.database().ref('/products/').once('value').then(function(snapshot) {
+ 				snapshot.forEach(function(child) {
+ 					console.log("will call update");
+
+ 						updatebox(child.val().name , child.val().price , child.val().pictureid);
+ 						console.log("did call update");
+
+ 				});
+ 				document.getElementById("warning").style.display = "none";
+ 				document.getElementById("balls").style.display = "none";
+
+ 				
+ 		});
+
+
+	</script>
+
+	<script >
+	function incquant(pic)
+	{
+				
+				var search = pic;
+
+		var curr = document.getElementById(search).innerHTML;
+		curr = "" + (Number(curr)+1);
+		
+		document.getElementById(search).innerHTML = curr;
+		
+
+
+
+	}
+	function decquant(pic) {
+		var search = pic;
+
+		var curr = document.getElementById(search).innerHTML;
+		if(curr >=2) {
+		curr = "" + (Number(curr)-1);
+		document.getElementById(search).innerHTML = curr;
+	    }
+		
+		
+		
+		
+	}
+	var updates = {};
+	function managecart(pic) {
+		console.log("I am again here");
+		var quantity = document.getElementById(pic).innerHTML;
+		console.log("quantity is "+quantity);
+		  updates[""+pic] =  ""+quantity;
+			firebase.auth().onAuthStateChanged(function(user) {
+				if(user) {
+					firebase.database().ref('/users/'+user.uid+/cart/).update(updates);
+					document.getElementById("b"+pic).innerHTML = " Added to Cart";
+				}
+
+
+
+			});
+		}
+
+
+
+
+
+
+	var ex = "";
+
+		function updatebox(name, price, pictureid) {
+
+
+			  ex += '<div class="storeproduct"> <img src="products/'+
+					 +pictureid +'.png" id="img">'+
+					'<br><h1 id="name" class="'+price+'">'+name+'</h1>'+
+					
+					'<h1 id="price"> Rs. '+price+'</h1>'+
+
+
+					'<div class="quantity"><h3 > Quantity : '+ 
+					'<button id="up" class="'+pictureid+' up" onclick= "incquant('+pictureid+')">+</button> <span id="'+pictureid+'">1</span>'+  
+					'<button id="down" class="'+pictureid+' down" onclick= "decquant('+pictureid+')"> - </button>  </h3> '+
+				'</div>'+
+
+			' <button id="b'+pictureid+'" onclick="managecart('+pictureid+')"> Add to Cart </button>   </div> ' ;
+
+			
+			
+
+			document.getElementById("container").innerHTML= ex;
+			
+		}
+
+
+
+
+	</script>
+
+
+	   <div id = "container">.
+	   </div>
+
+
+
+
+
+
+
+</body>
+</html>

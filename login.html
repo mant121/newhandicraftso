@@ -1,0 +1,207 @@
+</!DOCTYPE html>
+<html>
+<head>
+	<title> Sign up</title>
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="cookies.js"></script>
+</head>
+<body>
+
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+	<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCTwlg00CRN5HXahzZOXRh6fRIvAqbTsQo",
+    authDomain: "handicraftso-cda89.firebaseapp.com",
+    databaseURL: "https://handicraftso-cda89.firebaseio.com",
+    projectId: "handicraftso-cda89",
+    storageBucket: "",
+    messagingSenderId: "394708400898"
+  };
+  firebase.initializeApp(config);
+</script>
+
+
+<script>
+
+
+
+	function check()
+	{
+		console.log("clicked");
+		firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+					window.location.href = "profile.html";
+
+			}else {
+				window.location.href = "login.html";
+
+			}
+		});
+	}
+
+</script>
+
+
+	
+		 	<link rel="stylesheet" href="style.css">
+
+		
+		<img class="icon last" src="brown search.png">
+		<img class="icon" src="brown use.png" onclick="check()">
+		<a href="cart.html"><img class="icon" src="brown cart.png"> </a>
+		<br>
+		<br>
+		<br>
+		<br>
+		<h3 id = "welcome" style="color : #3F2823"></h3> 
+		<nav>
+		<div class = "bar">
+		<div class = "pro_bar">
+			<!-- <div>Space for logo</div> -->
+			<div class = "logo">
+			<img src = "logo.png" id="upper">
+			<img src = "underlogo.png" id="lower">
+			</div>
+			<div class = "navbar-titles">
+				
+			
+				<ul>
+				
+
+					<li class = "last"> <a href="contact.html">Contact Us</a></li>
+					<li><a href="profile.html" id="profile">Profile</a></li>
+					<li><a href="products.html">Store</a></li>
+					<li ><a href="index.html">Home</a></li>
+					<li class = "revealmore"> ... </li>
+					
+					
+				</ul>
+
+			</div>
+			</div>
+			</div>
+		</nav>
+		<script>
+			
+			firebase.auth().onAuthStateChanged(function(user) {
+
+			if(user) {
+				console.log("user exist"+user.email);
+								console.log("user exist"+user.uid);
+
+
+
+				firebase.database().ref('/users/'+ user.uid).once('value').then(function(snapshot){
+						var username = snapshot.val().username;
+						if(username === "")
+						{
+							document.getElementById("welcome").innerHTML = "Welcome "+user.email;
+						}else {
+							document.getElementById("welcome").innerHTML = "Welcome "+username;
+						}
+
+
+				});
+			
+			}else {
+				console.log("user does not exist");
+				document.getElementById("welcome").innerHTML = "Not Signed in ";
+			}
+		});
+
+		</script>
+
+
+		<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& -->
+
+
+
+
+
+<script>
+	
+	function checklogin()
+	{
+		 
+
+
+
+		var email = document.getElementById('email').value;
+		var pass = document.getElementById('password').value;
+		var exe = firebase.auth().signInWithEmailAndPassword(email,pass).catch(function(error){
+			switch(error.code) {
+				case 'auth/invalid-email' : msg = "Invalid Email Address";break;
+				case 'auth/user-disabled' : msg ="You are blocked from accesing our store.Kindly Contact us.";
+				case 'auth/user-not-found' : msg = "This email address is not registered with us.Kindly Signup with this email.";
+				case 'auth/wrong-password' : msg = "Invalid email/password combination.Check your password and try again";
+				default : msg ="Internal Error";
+
+
+			}
+			document.getElementById("status").innerHTML = msg;
+			
+
+
+		});
+		firebase.auth().onAuthStateChanged(function(user){
+
+			if(user) {
+				if(user.emailVerified === true) {
+				console.log("done");
+				window.location.href = "index.html";
+			}else {
+				document.getElementById("status").innerHTML = " Your email is not yet confirmed.kindly check your email and confirm your identity.";
+					firebase.auth().signOut().then(function(){
+
+					}) .catch(function(error){
+						document.getElementById("status").innerHTML = error.code;
+					})
+			}
+
+			}else {
+				console.log("failed");
+			}
+		});
+		
+		
+		
+		return false;
+	}
+
+</script>
+
+
+<div class="logincontainer">
+<h2> Login to continue shopping from us . </h2>
+<form onsubmit="return false" method="post">
+	<input type="email" name="email" placeholder=" Email ID" id="email"> <br>
+	<input type="password" name="password" placeholder=" Password" id="password"> <br>
+	<script>
+		
+	</script>
+		
+
+
+	<input type="submit" value="Login" id="signup" onclick="checklogin()">
+	</form>
+
+	<h2> Dont have an account ? <a href="signup.html">Sign up </a> </h2>
+	<br><br><h2 id="status"></h2>
+	<button id="resend">Resend Email Confirmation</button>
+	
+	</div>
+
+
+
+
+
+</body>
+</html>
